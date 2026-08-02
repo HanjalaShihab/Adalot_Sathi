@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +21,11 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'role',
+        'subscription_tier',
+        'subscription_expires_at',
     ];
 
     /**
@@ -43,6 +48,58 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'subscription_expires_at' => 'date',
+            'role' => 'string',
+            'subscription_tier' => 'string',
         ];
     }
+
+    /**
+     * Whether the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Whether the user is currently on a paid tier.
+     */
+    public function isPaid(): bool
+    {
+        if ($this->subscription_tier !== 'paid') {
+            return false;
+        }
+
+        if ($this->subscription_expires_at === null) {
+            return true;
+        }
+
+        return $this->subscription_expires_at->isFuture();
+    }
+
+    /**
+     * The cases owned by this user.
+     */
+    public function legalCases(): HasMany
+    {
+        return $this->hasMany(LegalCase::class, 'user_id');
+    }
+
+    /**
+     * The device tokens registered by this user.
+     */
+    public function deviceTokens(): HasMany
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
+
+    /**
+     * The notification logs for this user.
+     */
+    public function notificationLogs(): HasMany
+    {
+        return $this->hasMany(NotificationLog::class);
+    }
 }
+

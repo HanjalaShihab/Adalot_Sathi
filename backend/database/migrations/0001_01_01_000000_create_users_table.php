@@ -15,8 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('phone', 20)->nullable()->unique();
             $table->string('password');
+            $table->enum('role', ['lawyer', 'admin'])->default('lawyer');
+            $table->enum('subscription_tier', ['free', 'paid'])->default('free');
+            $table->date('subscription_expires_at')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

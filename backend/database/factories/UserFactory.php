@@ -24,11 +24,15 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'name' => fake()->name('en_BD'),
             'email' => fake()->unique()->safeEmail(),
+            'phone' => '01' . fake()->numberBetween(3, 9) . fake()->numerify('########'),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'role' => 'lawyer',
+            'subscription_tier' => 'free',
+            'subscription_expires_at' => null,
         ];
     }
 
@@ -41,4 +45,28 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * Set the user as a super admin.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+            'subscription_tier' => 'paid',
+            'subscription_expires_at' => now()->addYear()->toDateString(),
+        ]);
+    }
+
+    /**
+     * Set the user as a paid subscriber.
+     */
+    public function paid(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'subscription_tier' => 'paid',
+            'subscription_expires_at' => now()->addYear()->toDateString(),
+        ]);
+    }
 }
+
