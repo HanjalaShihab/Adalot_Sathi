@@ -14,7 +14,7 @@ class DeadlineResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'case_id' => $this->case_id,
             'title' => $this->title,
@@ -27,6 +27,18 @@ class DeadlineResource extends JsonResource
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
+
+        if ($this->relationLoaded('case')) {
+            $data['case'] = [
+                'id' => $this->case->id,
+                'title' => $this->case->title,
+                'case_number' => $this->case->case_number,
+                'client_name' => $this->case->client_name,
+            ];
+        }
+
+        return $data;
     }
 }
+
 

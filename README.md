@@ -93,3 +93,4 @@ API base: `http://127.0.0.1:8000/api/v1`
 - SMS channel is provider-agnostic by design; swapping providers is a one-file
   change in `app/Notifications/Channels/`.
 - Notification titles/bodies include "Adalot Sathi" as sender identity.
+
