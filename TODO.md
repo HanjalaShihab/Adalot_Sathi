@@ -1,55 +1,27 @@
-# Adalot Sathi — Task Tracker
+# Task: Update User Profile & Add Case Screens (Production-Ready)
 
-## Connectivity Fix (login/register "could not reach server") — ✅ DONE
-- [x] Add `android:usesCleartextTraffic="true"` to `mobile/android/app/src/main/AndroidManifest.xml`
-- [x] Make API base URL configurable via `--dart-define=API_BASE_URL` in `mobile/lib/core/config/app_config.dart`
-- [x] Verify backend reachable (server running on 0.0.0.0:8000, DB migrated+seeded — login returns HTTP 200)
-- [ ] Run `flutter analyze`
+## Backend (Laravel)
+- [x] 1. Migration: add extended fields to `cases` table
+- [x] 2. Migration: add profile fields to `users` table
+- [x] 3. Migration: create `case_documents` table
+- [x] 4. Update `LegalCase` model (fillable + casts)
+- [x] 5. Update `User` model (fillable + casts)
+- [x] 6. Update `StoreCaseRequest` / `UpdateCaseRequest` validation
+- [x] 7. Update `UpdateProfileRequest` validation
+- [x] 8. Update `CaseResource` / `UserResource` to expose new fields
+- [x] 9. Add `CaseDocumentController` + routes
+- [x] 10. Update `DatabaseSeeder`
 
-## Backend (Laravel 12 + Sanctum) — ✅ VERIFIED LOCALLY (SQLite)
-- [x] `composer.json` → Laravel 12 + Sanctum
-- [x] Env config: APP_NAME="Adalot Sathi API", timezone Asia/Dhaka, SQLite local / MySQL prod
-- [x] Install API + Sanctum personal access tokens migration
-- [x] User model + factory
-- [x] LegalCase model + factory + migration
-- [x] Deadline model + factory + migration
-- [x] DeviceToken + NotificationLog models/migrations
-- [x] Form Requests
-- [x] Resources
-- [x] AuthController
-- [x] CaseController
-- [x] DeadlineController
-- [x] DeviceTokenController
-- [x] Admin UserAdminController + AdminMiddleware
-- [x] Reminder command + job + FCM service + SMS channel + schedule
-- [x] Seeders
-- [x] `php artisan migrate` + `db:seed` run clean
-- [x] API verified via curl
-- [ ] **DEFERRED (user):** Switch to MySQL `adalot_sathi` DB — will implement later
-- [ ] API markdown reference
+## Frontend (Flutter)
+- [x] 11. Update `legal_case.dart` model + `CaseInput`
+- [x] 12. Update `user.dart` model
+- [x] 13. Add `case_document.dart` model + document repository
+- [x] 14. Rewrite `case_form_screen.dart` (collapsible sections A–I)
+- [x] 15. Rewrite `profile_screen.dart` (all new sections)
+- [x] 16. Update `profile_controller.dart` + `auth_repository.dart`
+- [x] 17. Update `case_repository.dart` + `api_case_repository.dart`
+- [x] 18. Update `repository_providers.dart`
 
-## Mobile (Flutter) — ✅ BUILDABLE & TESTED (wired to real API)
-- [x] Install Flutter stable SDK (3.44.8)
-- [x] `flutter create mobile`
-- [x] App identity: pubspec "adalot_sathi", Android label "Adalot Sathi", package `com.adalotsathi.app`
-- [x] Riverpod + flutter_secure_storage + dio + intl deps
-- [x] Models matching API JSON
-- [x] AuthRepository + secure token storage
-- [x] CaseRepository / DeadlineRepository / DeviceTokenRepository
-- [x] Auth screens (login/register) → real API
-- [x] App shell: bottom nav
-- [x] Home: today & upcoming
-- [x] Case list + detail + form
-- [x] Deadline form
-- [x] Mark deadline complete
-- [x] Profile
-- [x] Upgrade prompt screen
-- [x] FCM device-token registration + deep-link routing
-- [x] `flutter analyze` clean + `flutter test` passing
-- [ ] Run on Pixel_9 emulator / physical Android device (user action)
-
-## Shared / Followups
-- [x] Root README maintained
-- [ ] Commit to root git repo
-- [ ] Real SMS gateway integration
-- [ ] Firebase Cloud Messaging credentials
+## Followup
+- [ ] 19. Run `php artisan migrate` (backend)
+- [ ] 20. Run `flutter pub get` + `flutter analyze` (mobile)

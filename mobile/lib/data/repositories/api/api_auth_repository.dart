@@ -51,14 +51,43 @@ class ApiAuthRepository implements AuthRepository {
     }
   }
 
-  @override
-  Future<void> updateProfile({String? name, String? email, String? phone, String? password}) async {
+@override
+  Future<void> updateProfile({
+    String? name,
+    String? email,
+    String? phone,
+    String? password,
+    String? barCouncilNumber,
+    String? chamberName,
+    String? address,
+    String? district,
+    String? profilePhoto,
+    int? yearsOfExperience,
+    List<String>? practiceAreas,
+    String? preferredCourt,
+    String? appLanguage,
+    Map<String, dynamic>? notificationSettings,
+    Map<String, dynamic>? reminderSettings,
+    bool? darkMode,
+  }) async {
     try {
       final data = <String, dynamic>{
         if (name != null) 'name': name,
         if (email != null) 'email': email,
         if (phone != null) 'phone': phone,
         if (password != null && password.isNotEmpty) 'password': password,
+        if (barCouncilNumber != null) 'bar_council_number': barCouncilNumber,
+        if (chamberName != null) 'chamber_name': chamberName,
+        if (address != null) 'address': address,
+        if (district != null) 'district': district,
+        if (profilePhoto != null) 'profile_photo': profilePhoto,
+        if (yearsOfExperience != null) 'years_of_experience': yearsOfExperience,
+        if (practiceAreas != null) 'practice_areas': practiceAreas,
+        if (preferredCourt != null) 'preferred_court': preferredCourt,
+        if (appLanguage != null) 'app_language': appLanguage,
+        if (notificationSettings != null) 'notification_settings': notificationSettings,
+        if (reminderSettings != null) 'reminder_settings': reminderSettings,
+        if (darkMode != null) 'dark_mode': darkMode,
       };
       await _api.dio.put('/me', data: data);
     } catch (e) {

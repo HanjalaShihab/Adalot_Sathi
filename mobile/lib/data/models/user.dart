@@ -68,6 +68,24 @@ class User {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
+  // Personal information.
+  final String? barCouncilNumber;
+  final String? chamberName;
+  final String? address;
+  final String? district;
+  final String? profilePhoto;
+
+  // Professional information.
+  final int? yearsOfExperience;
+  final List<String> practiceAreas;
+  final String? preferredCourt;
+
+  // Preferences.
+  final String appLanguage;
+  final Map<String, dynamic> notificationSettings;
+  final Map<String, dynamic> reminderSettings;
+  final bool darkMode;
+
   const User({
     required this.id,
     required this.name,
@@ -79,6 +97,18 @@ class User {
     required this.subscription,
     this.createdAt,
     this.updatedAt,
+    this.barCouncilNumber,
+    this.chamberName,
+    this.address,
+    this.district,
+    this.profilePhoto,
+    this.yearsOfExperience,
+    this.practiceAreas = const [],
+    this.preferredCourt,
+    this.appLanguage = 'bn',
+    this.notificationSettings = const {},
+    this.reminderSettings = const {},
+    this.darkMode = false,
   });
 
   bool get isPaid => subscriptionTier == SubscriptionTier.paid;
@@ -98,6 +128,22 @@ class User {
       ),
       createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] as String? ?? ''),
+      barCouncilNumber: json['bar_council_number'] as String?,
+      chamberName: json['chamber_name'] as String?,
+      address: json['address'] as String?,
+      district: json['district'] as String?,
+      profilePhoto: json['profile_photo'] as String?,
+      yearsOfExperience: json['years_of_experience'] as int?,
+      practiceAreas: (json['practice_areas'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList(),
+      preferredCourt: json['preferred_court'] as String?,
+      appLanguage: json['app_language'] as String? ?? 'bn',
+      notificationSettings:
+          (json['notification_settings'] as Map<String, dynamic>?) ?? const {},
+      reminderSettings:
+          (json['reminder_settings'] as Map<String, dynamic>?) ?? const {},
+      darkMode: json['dark_mode'] as bool? ?? false,
     );
   }
 }

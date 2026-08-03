@@ -39,7 +39,24 @@ abstract interface class AuthRepository {
   Future<AuthResult> login(LoginInput input);
   Future<AuthResult> register(RegisterInput input);
   Future<User> me();
-  Future<void> updateProfile({String? name, String? email, String? phone, String? password});
+  Future<void> updateProfile({
+    String? name,
+    String? email,
+    String? phone,
+    String? password,
+    String? barCouncilNumber,
+    String? chamberName,
+    String? address,
+    String? district,
+    String? profilePhoto,
+    int? yearsOfExperience,
+    List<String>? practiceAreas,
+    String? preferredCourt,
+    String? appLanguage,
+    Map<String, dynamic>? notificationSettings,
+    Map<String, dynamic>? reminderSettings,
+    bool? darkMode,
+  });
   Future<void> logout();
 }
 

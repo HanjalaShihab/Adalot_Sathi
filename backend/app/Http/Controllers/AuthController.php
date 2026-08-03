@@ -73,11 +73,27 @@ class AuthController extends Controller
     /**
      * Update the authenticated user's profile.
      */
-    public function updateProfile(UpdateProfileRequest $request): UserResource
+public function updateProfile(UpdateProfileRequest $request): UserResource
     {
         $user = $request->user();
 
-        $data = $request->only(['name', 'email', 'phone']);
+        $data = $request->only([
+            'name',
+            'email',
+            'phone',
+            'bar_council_number',
+            'chamber_name',
+            'address',
+            'district',
+            'profile_photo',
+            'years_of_experience',
+            'practice_areas',
+            'preferred_court',
+            'app_language',
+            'notification_settings',
+            'reminder_settings',
+            'dark_mode',
+        ]);
 
         if ($request->filled('password')) {
             $data['password'] = $request->password;

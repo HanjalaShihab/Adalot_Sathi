@@ -28,6 +28,18 @@ class ProfileController extends Notifier<ProfileState> {
     String? email,
     String? phone,
     String? password,
+    String? barCouncilNumber,
+    String? chamberName,
+    String? address,
+    String? district,
+    String? profilePhoto,
+    int? yearsOfExperience,
+    List<String>? practiceAreas,
+    String? preferredCourt,
+    String? appLanguage,
+    Map<String, dynamic>? notificationSettings,
+    Map<String, dynamic>? reminderSettings,
+    bool? darkMode,
   }) async {
     state = state.copyWith(isSubmitting: true, error: null, successMessage: null);
     try {
@@ -36,6 +48,18 @@ class ProfileController extends Notifier<ProfileState> {
             email: email,
             phone: phone,
             password: password,
+            barCouncilNumber: barCouncilNumber,
+            chamberName: chamberName,
+            address: address,
+            district: district,
+            profilePhoto: profilePhoto,
+            yearsOfExperience: yearsOfExperience,
+            practiceAreas: practiceAreas,
+            preferredCourt: preferredCourt,
+            appLanguage: appLanguage,
+            notificationSettings: notificationSettings,
+            reminderSettings: reminderSettings,
+            darkMode: darkMode,
           );
       state = state.copyWith(
         isSubmitting: false,

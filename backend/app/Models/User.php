@@ -26,6 +26,18 @@ class User extends Authenticatable
         'role',
         'subscription_tier',
         'subscription_expires_at',
+        'bar_council_number',
+        'chamber_name',
+        'address',
+        'district',
+        'profile_photo',
+        'years_of_experience',
+        'practice_areas',
+        'preferred_court',
+        'app_language',
+        'notification_settings',
+        'reminder_settings',
+        'dark_mode',
     ];
 
     /**
@@ -41,7 +53,7 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+* @return array<string, string>
      */
     protected function casts(): array
     {
@@ -51,6 +63,11 @@ class User extends Authenticatable
             'subscription_expires_at' => 'date',
             'role' => 'string',
             'subscription_tier' => 'string',
+            'years_of_experience' => 'integer',
+            'practice_areas' => 'array',
+            'notification_settings' => 'array',
+            'reminder_settings' => 'array',
+            'dark_mode' => 'boolean',
         ];
     }
 

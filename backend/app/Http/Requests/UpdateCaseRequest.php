@@ -20,18 +20,36 @@ class UpdateCaseRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules(): array
+public function rules(): array
     {
         return [
             'title' => ['sometimes', 'string', 'max:255'],
-            'case_number' => ['nullable', 'string', 'max:255'],
+            'case_number' => ['sometimes', 'string', 'max:255'],
             'client_name' => ['sometimes', 'string', 'max:255'],
-            'client_phone' => ['nullable', 'string', 'regex:/^01[3-9][0-9]{8}$/'],
-            'court_name' => ['nullable', 'string', 'max:255'],
+            'client_phone' => ['sometimes', 'string', 'regex:/^01[3-9][0-9]{8}$/'],
+            'client_email' => ['nullable', 'email', 'max:255'],
+            'client_address' => ['nullable', 'string'],
+            'court_name' => ['sometimes', 'string', 'max:255'],
+            'judge_name' => ['nullable', 'string', 'max:255'],
+            'bench' => ['nullable', 'string', 'max:255'],
             'opposing_party' => ['nullable', 'string', 'max:255'],
-            'case_type' => ['nullable', 'string', 'max:255'],
+            'opposing_lawyer' => ['nullable', 'string', 'max:255'],
+            'case_type' => ['sometimes', 'string', 'max:255'],
             'status' => ['sometimes', 'string', Rule::in(['active', 'closed', 'on_hold'])],
             'notes' => ['nullable', 'string'],
+            'filing_date' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'next_hearing_date' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'judgment_date' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'reminder_date' => ['nullable', 'date', 'date_format:Y-m-d'],
+            'reminder_time' => ['nullable', 'date_format:H:i'],
+            'reminder_option' => ['nullable', 'string', Rule::in(['1', '2', '3', '7', 'custom'])],
+            'repeat_reminder' => ['nullable', 'boolean'],
+            'professional_fee' => ['nullable', 'numeric', 'min:0'],
+            'paid_amount' => ['nullable', 'numeric', 'min:0'],
+            'due_amount' => ['nullable', 'numeric', 'min:0'],
+            'payment_status' => ['nullable', 'string', Rule::in(['paid', 'partial', 'unpaid'])],
+            'case_progress' => ['nullable', 'array'],
+            'ai_flags' => ['nullable', 'array'],
         ];
     }
 

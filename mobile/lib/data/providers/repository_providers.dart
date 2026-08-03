@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/network/api_client.dart';
 import '../../core/storage/token_storage.dart';
 import '../repositories/api/api_auth_repository.dart';
+import '../repositories/api/api_case_document_repository.dart';
 import '../repositories/api/api_case_repository.dart';
 import '../repositories/api/api_deadline_repository.dart';
 import '../repositories/api/api_device_token_repository.dart';
 import '../repositories/auth_repository.dart';
+import '../repositories/case_document_repository.dart';
 import '../repositories/case_repository.dart';
 import '../repositories/deadline_repository.dart';
 import '../repositories/device_token_repository.dart';
@@ -29,6 +31,10 @@ final authRepositoryProvider = Provider<AuthRepository>(
 
 final caseRepositoryProvider = Provider<CaseRepository>(
   (ref) => ApiCaseRepository(ref.watch(apiClientProvider)),
+);
+
+final caseDocumentRepositoryProvider = Provider<CaseDocumentRepository>(
+  (ref) => ApiCaseDocumentRepository(ref.watch(apiClientProvider)),
 );
 
 final deadlineRepositoryProvider = Provider<DeadlineRepository>(

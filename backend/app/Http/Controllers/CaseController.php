@@ -25,7 +25,7 @@ class CaseController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = $request->user()->legalCases()
-            ->with('deadlines')
+            ->with(['deadlines', 'documents'])
             ->latest();
 
         // Search by case number or client name.
@@ -70,7 +70,7 @@ class CaseController extends Controller
 
         $legalCase = $user->legalCases()->create($request->validated());
 
-        return (new CaseResource($legalCase->load('deadlines')))
+        return (new CaseResource($legalCase->load(['deadlines', 'documents'])))
             ->response()
             ->setStatusCode(201);
     }
@@ -81,7 +81,7 @@ class CaseController extends Controller
     public function show(Request $request, int $id): CaseResource
     {
         $legalCase = $request->user()->legalCases()
-            ->with('deadlines')
+            ->with(['deadlines', 'documents'])
             ->findOrFail($id);
 
         return new CaseResource($legalCase);
@@ -107,7 +107,7 @@ class CaseController extends Controller
 
         $legalCase->update($request->validated());
 
-        return new CaseResource($legalCase->load('deadlines'));
+        return new CaseResource($legalCase->load(['deadlines', 'documents']));
     }
 
     /**
@@ -123,4 +123,3 @@ class CaseController extends Controller
         ]);
     }
 }
-

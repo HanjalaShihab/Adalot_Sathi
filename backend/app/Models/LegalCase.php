@@ -28,17 +28,35 @@ class LegalCase extends Model
      *
      * @var list<string>
      */
-    protected $fillable = [
+protected $fillable = [
         'user_id',
         'title',
         'case_number',
         'client_name',
         'client_phone',
+        'client_email',
+        'client_address',
         'court_name',
+        'judge_name',
+        'bench',
         'opposing_party',
+        'opposing_lawyer',
         'case_type',
         'status',
         'notes',
+        'filing_date',
+        'next_hearing_date',
+        'judgment_date',
+        'reminder_date',
+        'reminder_time',
+        'reminder_option',
+        'repeat_reminder',
+        'professional_fee',
+        'paid_amount',
+        'due_amount',
+        'payment_status',
+        'case_progress',
+        'ai_flags',
     ];
 
     /**
@@ -50,6 +68,18 @@ class LegalCase extends Model
     {
         return [
             'status' => 'string',
+            'filing_date' => 'date:Y-m-d',
+            'next_hearing_date' => 'date:Y-m-d',
+            'judgment_date' => 'date:Y-m-d',
+            'reminder_date' => 'date:Y-m-d',
+            'reminder_time' => 'string',
+            'repeat_reminder' => 'boolean',
+            'professional_fee' => 'decimal:2',
+            'paid_amount' => 'decimal:2',
+            'due_amount' => 'decimal:2',
+            'payment_status' => 'string',
+            'case_progress' => 'array',
+            'ai_flags' => 'array',
         ];
     }
 
@@ -61,12 +91,20 @@ class LegalCase extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
+/**
      * The deadlines under this case.
      */
     public function deadlines(): HasMany
     {
         return $this->hasMany(Deadline::class, 'case_id');
+    }
+
+    /**
+     * The documents attached to this case.
+     */
+    public function documents(): HasMany
+    {
+        return $this->hasMany(CaseDocument::class, 'case_id');
     }
 }
 

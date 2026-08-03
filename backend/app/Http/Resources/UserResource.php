@@ -17,11 +17,23 @@ class UserResource extends JsonResource
     {
         $caseLimitService = app(CaseLimitService::class);
 
-        return [
+return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
+            'bar_council_number' => $this->bar_council_number,
+            'chamber_name' => $this->chamber_name,
+            'address' => $this->address,
+            'district' => $this->district,
+            'profile_photo' => $this->profile_photo,
+            'years_of_experience' => $this->years_of_experience,
+            'practice_areas' => $this->practice_areas,
+            'preferred_court' => $this->preferred_court,
+            'app_language' => $this->app_language,
+            'notification_settings' => $this->notification_settings,
+            'reminder_settings' => $this->reminder_settings,
+            'dark_mode' => $this->dark_mode,
             'role' => $this->role,
             'subscription_tier' => $this->subscription_tier,
             'subscription_expires_at' => $this->subscription_expires_at?->format('Y-m-d'),

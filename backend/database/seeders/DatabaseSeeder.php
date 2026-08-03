@@ -23,12 +23,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // ─── Demo Free-Tier Lawyer (5 active cases → limit reached) ───
-        $freeUser = User::factory()->create([
+$freeUser = User::factory()->create([
             'name' => 'Barrister Tanvir Ahmed',
             'email' => 'tanvir@example.com',
             'phone' => '01712345678',
             'password' => 'Password@123',
             'subscription_tier' => 'free',
+            'bar_council_number' => 'BC-2023-0471',
+            'chamber_name' => 'Tanvir & Associates, Dhaka',
+            'address' => 'House 12, Road 5, Dhanmondi, Dhaka',
+            'district' => 'Dhaka',
+            'years_of_experience' => 12,
+            'practice_areas' => ['Criminal', 'Civil', 'Family'],
+            'preferred_court' => 'Dhaka District Court',
+            'app_language' => 'bn',
         ]);
 
         foreach ([
@@ -79,11 +87,19 @@ class DatabaseSeeder extends Seeder
         }
 
         // ─── Paid-Tier Lawyer (unlimited cases) ───────────────────────
-        $paidUser = User::factory()->paid()->create([
+$paidUser = User::factory()->paid()->create([
             'name' => 'Advocate Sadia Rahman',
             'email' => 'sadia@example.com',
             'phone' => '01812345678',
             'password' => 'Password@123',
+            'bar_council_number' => 'BC-2022-1189',
+            'chamber_name' => 'Sadia Rahman & Co.',
+            'address' => 'Flat 3B, Green Road, Dhaka',
+            'district' => 'Dhaka',
+            'years_of_experience' => 8,
+            'practice_areas' => ['Corporate', 'Property', 'Tax'],
+            'preferred_court' => 'High Court Division',
+            'app_language' => 'bn',
         ]);
 
         foreach ([

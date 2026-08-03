@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserAdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CaseController;
+use App\Http\Controllers\CaseDocumentController;
 use App\Http\Controllers\DeadlineController;
 use App\Http\Controllers\DeviceTokenController;
 use Illuminate\Support\Facades\Route;
@@ -41,7 +42,7 @@ Route::prefix('v1')->group(function () {
         Route::put('/cases/{case}', [CaseController::class, 'update']);
         Route::delete('/cases/{case}', [CaseController::class, 'destroy']);
 
-        // Deadlines.
+// Deadlines.
         Route::get('/deadlines/upcoming', [DeadlineController::class, 'upcoming']);
         Route::get('/cases/{case}/deadlines', [DeadlineController::class, 'index']);
         Route::post('/cases/{case}/deadlines', [DeadlineController::class, 'store']);
@@ -49,6 +50,12 @@ Route::prefix('v1')->group(function () {
         Route::put('/cases/{case}/deadlines/{deadline}', [DeadlineController::class, 'update']);
         Route::delete('/cases/{case}/deadlines/{deadline}', [DeadlineController::class, 'destroy']);
         Route::post('/cases/{case}/deadlines/{deadline}/complete', [DeadlineController::class, 'markCompleted']);
+
+        // Case documents.
+        Route::get('/cases/{case}/documents', [CaseDocumentController::class, 'index']);
+        Route::post('/cases/{case}/documents', [CaseDocumentController::class, 'store']);
+        Route::get('/cases/{case}/documents/{document}/download', [CaseDocumentController::class, 'download']);
+        Route::delete('/cases/{case}/documents/{document}', [CaseDocumentController::class, 'destroy']);
 
         // Super admin routes.
         Route::middleware('admin')->prefix('admin')->group(function () {
