@@ -1,50 +1,55 @@
 # Adalot Sathi — Task Tracker
 
+## Connectivity Fix (login/register "could not reach server") — ✅ DONE
+- [x] Add `android:usesCleartextTraffic="true"` to `mobile/android/app/src/main/AndroidManifest.xml`
+- [x] Make API base URL configurable via `--dart-define=API_BASE_URL` in `mobile/lib/core/config/app_config.dart`
+- [x] Verify backend reachable (server running on 0.0.0.0:8000, DB migrated+seeded — login returns HTTP 200)
+- [ ] Run `flutter analyze`
+
 ## Backend (Laravel 12 + Sanctum) — ✅ VERIFIED LOCALLY (SQLite)
-- [x] `composer.json` → Laravel 12 + Sanctum (Laravel 11 blocked by security advisories)
+- [x] `composer.json` → Laravel 12 + Sanctum
 - [x] Env config: APP_NAME="Adalot Sathi API", timezone Asia/Dhaka, SQLite local / MySQL prod
 - [x] Install API + Sanctum personal access tokens migration
-- [x] User model (phone, role, subscription_tier, subscription_expires_at) + factory
-- [x] LegalCase model (table `cases`, status enum) + factory + migration
-- [x] Deadline model (event_type, status, reminder_days_before JSON) + factory + migration
+- [x] User model + factory
+- [x] LegalCase model + factory + migration
+- [x] Deadline model + factory + migration
 - [x] DeviceToken + NotificationLog models/migrations
-- [x] Form Requests (register, login, profile, case, deadline, device token)
-- [x] Resources (User, Case, Deadline)
-- [x] AuthController (register/login/logout/me/updateProfile)
-- [x] CaseController (CRUD + search/filter + CaseLimitService)
-- [x] DeadlineController (nested CRUD + upcoming + markCompleted)
-- [x] DeviceTokenController (register/destroy)
-- [x] Admin UserAdminController (index/show/update/destroy) + AdminMiddleware
-- [x] Reminder command + job + FCM service + swappable SMS channel + schedule
-- [x] Seeders: super admin, free-at-limit, paid lawyers, realistic BD cases/deadlines
-- [x] `php artisan migrate` + `db:seed` run clean (8 users, 19 cases, 63 deadlines)
-- [x] API verified via curl: login, register(422 dup phone), limit(403), closed-case(201)
+- [x] Form Requests
+- [x] Resources
+- [x] AuthController
+- [x] CaseController
+- [x] DeadlineController
+- [x] DeviceTokenController
+- [x] Admin UserAdminController + AdminMiddleware
+- [x] Reminder command + job + FCM service + SMS channel + schedule
+- [x] Seeders
+- [x] `php artisan migrate` + `db:seed` run clean
+- [x] API verified via curl
 - [ ] **DEFERRED (user):** Switch to MySQL `adalot_sathi` DB — will implement later
 - [ ] API markdown reference
 
 ## Mobile (Flutter) — ✅ BUILDABLE & TESTED (wired to real API)
-- [x] Install Flutter stable SDK (3.44.8 at ~/development/flutter)
-- [x] `flutter create mobile` (org com.adalotsathi, no nested .git)
-- [x] App identity: pubspec name "adalot_sathi", Android label "Adalot Sathi", package `com.adalotsathi.app`
+- [x] Install Flutter stable SDK (3.44.8)
+- [x] `flutter create mobile`
+- [x] App identity: pubspec "adalot_sathi", Android label "Adalot Sathi", package `com.adalotsathi.app`
 - [x] Riverpod + flutter_secure_storage + dio + intl deps
-- [x] Models (User, LegalCase, Deadline) matching API JSON
-- [x] AuthRepository (ApiAuthRepository) + secure token storage
-- [x] CaseRepository / DeadlineRepository / DeviceTokenRepository (API impl via dio + interceptors)
+- [x] Models matching API JSON
+- [x] AuthRepository + secure token storage
+- [x] CaseRepository / DeadlineRepository / DeviceTokenRepository
 - [x] Auth screens (login/register) → real API
-- [x] App shell: bottom nav (Today & Cases & Profile)
-- [x] Home: today & upcoming grouped Overdue/Today/Week/Later
-- [x] Case list (search/filter) + detail + add/edit form
-- [x] Add/Edit deadline form (reminder_days_before 7/3/1)
+- [x] App shell: bottom nav
+- [x] Home: today & upcoming
+- [x] Case list + detail + form
+- [x] Deadline form
 - [x] Mark deadline complete
-- [x] Profile: tier + usage bar + logout
-- [x] Upgrade prompt screen on `case_limit_reached`
-- [x] FCM device-token registration endpoint + deep-link routing (debug trigger in Home app bar)
-- [x] `flutter analyze` clean (0 errors/warnings) + `flutter test` all passing
+- [x] Profile
+- [x] Upgrade prompt screen
+- [x] FCM device-token registration + deep-link routing
+- [x] `flutter analyze` clean + `flutter test` passing
 - [ ] Run on Pixel_9 emulator / physical Android device (user action)
 
 ## Shared / Followups
-- [x] Root README maintained (progress + how to run)
-- [ ] Commit to root git repo (single repo)
-- [ ] Real SMS gateway integration (awaiting provider choice)
-- [ ] Firebase Cloud Messaging credentials for real push
-
+- [x] Root README maintained
+- [ ] Commit to root git repo
+- [ ] Real SMS gateway integration
+- [ ] Firebase Cloud Messaging credentials

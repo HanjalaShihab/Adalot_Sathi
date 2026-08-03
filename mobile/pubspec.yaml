@@ -12,7 +12,10 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.6.1
   dio: ^5.7.0
-  flutter_secure_storage: ^9.2.2
+  # 8.x uses the MethodChannel (no native FFI/JNI build) — avoids the
+  # jni/jni_flutter NDK requirement that breaks the build on this machine.
+  # Same read()/write()/delete() API as 9.x.
+  flutter_secure_storage: ^8.1.0
   intl: ^0.19.0
   cupertino_icons: ^1.0.8
 

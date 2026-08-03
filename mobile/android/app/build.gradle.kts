@@ -6,8 +6,13 @@ plugins {
 
 android {
     namespace = "com.adalotsathi.app"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // flutter.compileSdkVersion resolves to android-33 on Flutter 3.44.8, but
+    // flutter_secure_storage (and its transitive AndroidX deps) now require
+    // compileSdk 34+. Pin to 36 (installed locally) to satisfy the AAR metadata.
+    compileSdk = 36
+    // Flutter 3.44.8 defaults to NDK 28.2.x, but the local SDK only has a
+    // broken/empty 28.2.13676358 install. Pin to the fully-installed NDK 27.
+    ndkVersion = "27.1.12297006"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
