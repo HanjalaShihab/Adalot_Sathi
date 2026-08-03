@@ -22,10 +22,21 @@ subprojects {
 // only has a broken/empty install of that version. Pin every Android
 // subproject (including native plugins like :jni) to the fully-installed
 // NDK 27 so configuration does not fail with CXX1101.
+//
+// NOTE: Native plugins (e.g. package:jni) set `ndkVersion flutter.ndkVersion`
+// in their own android { } block, which overwrites any value set during plugin
+// application. `afterEvaluate` ensures our override runs LAST, after the
+// plugin's build script has fully evaluated.
 subprojects {
     plugins.withId("com.android.library") {
-        extensions.configure<com.android.build.api.dsl.LibraryExtension>("android") {
-            ndkVersion = "27.1.12297006"
+        afterEvaluate {
+            extensions.configure<com.android.build.api.dsl.LibraryExtension>("android") {
+                ndkVersion = "27.1.12297006"
+                // Native plugins (e.g. file_picker -> flutter_plugin_android_lifecycle)
+                // now require compileSdk 36+. Pin plugin library modules to 36 so
+                // AAR metadata checks pass.
+                compileSdk = 36
+            }
         }
     }
 }

@@ -108,7 +108,9 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
   Future<void> _loadCase() async {
     setState(() => _isLoading = true);
     try {
-      final legalCase = await ref.read(caseRepositoryProvider).getCase(widget.caseId!);
+      final legalCase = await ref
+          .read(caseRepositoryProvider)
+          .getCase(widget.caseId!);
       _titleController.text = legalCase.title;
       _caseNumberController.text = legalCase.caseNumber ?? '';
       _caseTypeController.text = legalCase.caseType ?? '';
@@ -147,7 +149,9 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
         ..addAll(legalCase.documents);
     } on AppException catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.message)));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -163,8 +167,10 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
     return TimeOfDay(hour: h, minute: m);
   }
 
-  static String? _fmtMoney(double? v) =>
-      v == null ? '' : v.toStringAsFixed(v == v.roundToDouble() ? 0 : 2);
+  static String _fmtMoney(double? v) {
+    if (v == null) return '';
+    return v.toStringAsFixed(v == v.roundToDouble() ? 0 : 2);
+  }
 
   @override
   void dispose() {
@@ -191,7 +197,7 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
     final fee = double.tryParse(_professionalFeeController.text.trim());
     final paid = double.tryParse(_paidAmountController.text.trim());
     if (fee != null && paid != null) {
-      final due = (fee - paid).clamp(0, double.infinity);
+      final due = (fee - paid).clamp(0, double.infinity).toDouble();
       _dueAmountController.text = _fmtMoney(due);
     }
   }
@@ -240,14 +246,18 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
           // In create mode, keep a local record; uploads happen after case creation.
           final size = await File(path).length();
           if (mounted) {
-            setState(() => _documents.add(CaseDocument(
+            setState(
+              () => _documents.add(
+                CaseDocument(
                   id: -DateTime.now().millisecondsSinceEpoch,
                   fileName: file.name,
                   filePath: path,
                   mimeType: type.wire,
                   size: size,
                   type: type,
-                )));
+                ),
+              ),
+            );
           }
         }
       } catch (e) {
@@ -263,14 +273,17 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
   static CaseDocumentType _docTypeFromName(String name) {
     final lower = name.toLowerCase();
     if (lower.endsWith('.pdf')) return CaseDocumentType.pdf;
-    if (lower.endsWith('.doc') || lower.endsWith('.docx')) return CaseDocumentType.word;
+    if (lower.endsWith('.doc') || lower.endsWith('.docx'))
+      return CaseDocumentType.word;
     return CaseDocumentType.image;
   }
 
   Future<void> _removeDocument(CaseDocument doc) async {
     if (doc.id > 0) {
       try {
-        await ref.read(caseDocumentRepositoryProvider).deleteDocument(widget.caseId!, doc.id);
+        await ref
+            .read(caseDocumentRepositoryProvider)
+            .deleteDocument(widget.caseId!, doc.id);
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -286,7 +299,8 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
   Future<void> _downloadDocument(CaseDocument doc) async {
     if (doc.id <= 0) return; // Not yet uploaded.
     try {
-      final bytes = await ref.read(caseDocumentRepositoryProvider)
+      final bytes = await ref
+          .read(caseDocumentRepositoryProvider)
           .downloadDocument(widget.caseId!, doc.id);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -310,19 +324,41 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
 
     final input = CaseInput(
       title: _titleController.text.trim(),
-      caseNumber: _caseNumberController.text.trim().isEmpty ? null : _caseNumberController.text.trim(),
+      caseNumber: _caseNumberController.text.trim().isEmpty
+          ? null
+          : _caseNumberController.text.trim(),
       clientName: _clientNameController.text.trim(),
-      clientPhone: _clientPhoneController.text.trim().isEmpty ? null : _clientPhoneController.text.trim(),
-      clientEmail: _clientEmailController.text.trim().isEmpty ? null : _clientEmailController.text.trim(),
-      clientAddress: _clientAddressController.text.trim().isEmpty ? null : _clientAddressController.text.trim(),
-      courtName: _courtNameController.text.trim().isEmpty ? null : _courtNameController.text.trim(),
-      judgeName: _judgeNameController.text.trim().isEmpty ? null : _judgeNameController.text.trim(),
-      bench: _benchController.text.trim().isEmpty ? null : _benchController.text.trim(),
-      opposingParty: _opposingPartyController.text.trim().isEmpty ? null : _opposingPartyController.text.trim(),
-      opposingLawyer: _opposingLawyerController.text.trim().isEmpty ? null : _opposingLawyerController.text.trim(),
-      caseType: _caseTypeController.text.trim().isEmpty ? null : _caseTypeController.text.trim(),
+      clientPhone: _clientPhoneController.text.trim().isEmpty
+          ? null
+          : _clientPhoneController.text.trim(),
+      clientEmail: _clientEmailController.text.trim().isEmpty
+          ? null
+          : _clientEmailController.text.trim(),
+      clientAddress: _clientAddressController.text.trim().isEmpty
+          ? null
+          : _clientAddressController.text.trim(),
+      courtName: _courtNameController.text.trim().isEmpty
+          ? null
+          : _courtNameController.text.trim(),
+      judgeName: _judgeNameController.text.trim().isEmpty
+          ? null
+          : _judgeNameController.text.trim(),
+      bench: _benchController.text.trim().isEmpty
+          ? null
+          : _benchController.text.trim(),
+      opposingParty: _opposingPartyController.text.trim().isEmpty
+          ? null
+          : _opposingPartyController.text.trim(),
+      opposingLawyer: _opposingLawyerController.text.trim().isEmpty
+          ? null
+          : _opposingLawyerController.text.trim(),
+      caseType: _caseTypeController.text.trim().isEmpty
+          ? null
+          : _caseTypeController.text.trim(),
       status: _status,
-      notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+      notes: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(),
       filingDate: _filingDate,
       nextHearingDate: _nextHearingDate,
       judgmentDate: _judgmentDate,
@@ -368,27 +404,36 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_isEdit ? 'Case updated successfully.' : 'Case created successfully.')),
+        SnackBar(
+          content: Text(
+            _isEdit
+                ? 'Case updated successfully.'
+                : 'Case created successfully.',
+          ),
+        ),
       );
       Navigator.of(context).pop(true);
       ref.read(caseListControllerProvider.notifier).refresh();
     } on CaseLimitReachedException catch (e) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      final shouldUpgrade = await Navigator.of(context).pushNamed<bool>(
-        AppRoutes.upgrade,
-        arguments: {'limit': e.limit},
-      );
+      final shouldUpgrade = await Navigator.of(
+        context,
+      ).pushNamed<bool>(AppRoutes.upgrade, arguments: {'limit': e.limit});
       if (shouldUpgrade == true && mounted) Navigator.of(context).pop(false);
     } on AppException catch (e) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Something went wrong. Please try again.')),
+        const SnackBar(
+          content: Text('Something went wrong. Please try again.'),
+        ),
       );
     }
   }
@@ -419,14 +464,32 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       subtitle: 'Required',
                       child: Column(
                         children: [
-                          _field(_titleController, 'Case title *', 'e.g. Rahim vs. Karim – Title Dispute',
-                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Title is required' : null),
+                          _field(
+                            _titleController,
+                            'Case title *',
+                            'e.g. Rahim vs. Karim – Title Dispute',
+                            validator: (v) => (v == null || v.trim().isEmpty)
+                                ? 'Title is required'
+                                : null,
+                          ),
                           const SizedBox(height: 14),
-                          _field(_caseNumberController, 'Case number *', 'e.g. Civil Suit 145/2023',
-                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Case number is required' : null),
+                          _field(
+                            _caseNumberController,
+                            'Case number *',
+                            'e.g. Civil Suit 145/2023',
+                            validator: (v) => (v == null || v.trim().isEmpty)
+                                ? 'Case number is required'
+                                : null,
+                          ),
                           const SizedBox(height: 14),
-                          _field(_caseTypeController, 'Case type *', 'e.g. Civil, Criminal, Family, Property',
-                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Case type is required' : null),
+                          _field(
+                            _caseTypeController,
+                            'Case type *',
+                            'e.g. Civil, Criminal, Family, Property',
+                            validator: (v) => (v == null || v.trim().isEmpty)
+                                ? 'Case type is required'
+                                : null,
+                          ),
                           const SizedBox(height: 16),
                           _statusSelector(),
                         ],
@@ -437,34 +500,58 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       title: 'Client Information',
                       subtitle: 'Optional',
                       open: _clientOpen,
-                      onToggle: () => setState(() => _clientOpen = !_clientOpen),
+                      onToggle: () =>
+                          setState(() => _clientOpen = !_clientOpen),
                       child: Column(
                         children: [
-                          _field(_clientNameController, 'Client name *', 'e.g. Abdul Rahim',
-                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Client name is required' : null),
+                          _field(
+                            _clientNameController,
+                            'Client name *',
+                            'e.g. Abdul Rahim',
+                            validator: (v) => (v == null || v.trim().isEmpty)
+                                ? 'Client name is required'
+                                : null,
+                          ),
                           const SizedBox(height: 14),
-                          _field(_clientPhoneController, 'Client phone *', '01XXXXXXXXX',
-                              keyboardType: TextInputType.phone,
-                              validator: (v) {
-                                if (v == null || v.trim().isEmpty) return 'Client phone is required';
-                                if (!RegExp(r'^01[3-9][0-9]{8}$').hasMatch(v.trim())) {
-                                  return 'Enter a valid Bangladeshi number';
-                                }
-                                return null;
-                              }),
+                          _field(
+                            _clientPhoneController,
+                            'Client phone *',
+                            '01XXXXXXXXX',
+                            keyboardType: TextInputType.phone,
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty)
+                                return 'Client phone is required';
+                              if (!RegExp(
+                                r'^01[3-9][0-9]{8}$',
+                              ).hasMatch(v.trim())) {
+                                return 'Enter a valid Bangladeshi number';
+                              }
+                              return null;
+                            },
+                          ),
                           const SizedBox(height: 14),
-                          _field(_clientEmailController, 'Client email (optional)', 'client@example.com',
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (v) {
-                                if (v == null || v.trim().isEmpty) return null;
-                                if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(v.trim())) {
-                                  return 'Enter a valid email';
-                                }
-                                return null;
-                              }),
+                          _field(
+                            _clientEmailController,
+                            'Client email (optional)',
+                            'client@example.com',
+                            keyboardType: TextInputType.emailAddress,
+                            validator: (v) {
+                              if (v == null || v.trim().isEmpty) return null;
+                              if (!RegExp(
+                                r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                              ).hasMatch(v.trim())) {
+                                return 'Enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
                           const SizedBox(height: 14),
-                          _field(_clientAddressController, 'Client address (optional)', 'House, Road, Thana',
-                              maxLines: 2),
+                          _field(
+                            _clientAddressController,
+                            'Client address (optional)',
+                            'House, Road, Thana',
+                            maxLines: 2,
+                          ),
                         ],
                       ),
                     ),
@@ -476,12 +563,26 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       onToggle: () => setState(() => _courtOpen = !_courtOpen),
                       child: Column(
                         children: [
-                          _field(_courtNameController, 'Court *', 'e.g. Dhaka District Court',
-                              validator: (v) => (v == null || v.trim().isEmpty) ? 'Court is required' : null),
+                          _field(
+                            _courtNameController,
+                            'Court *',
+                            'e.g. Dhaka District Court',
+                            validator: (v) => (v == null || v.trim().isEmpty)
+                                ? 'Court is required'
+                                : null,
+                          ),
                           const SizedBox(height: 14),
-                          _field(_judgeNameController, 'Judge name (optional)', 'e.g. Md. Kamal Hossain'),
+                          _field(
+                            _judgeNameController,
+                            'Judge name (optional)',
+                            'e.g. Md. Kamal Hossain',
+                          ),
                           const SizedBox(height: 14),
-                          _field(_benchController, 'Bench (optional)', 'e.g. Civil Bench 1'),
+                          _field(
+                            _benchController,
+                            'Bench (optional)',
+                            'e.g. Civil Bench 1',
+                          ),
                         ],
                       ),
                     ),
@@ -493,17 +594,29 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       onToggle: () => setState(() => _datesOpen = !_datesOpen),
                       child: Column(
                         children: [
-                          _dateField('Case filing date', _filingDate,
-                              (d) => setState(() => _filingDate = d)),
+                          _dateField(
+                            'Case filing date',
+                            _filingDate,
+                            (d) => setState(() => _filingDate = d),
+                          ),
                           const SizedBox(height: 12),
-                          _dateField('Next hearing date', _nextHearingDate,
-                              (d) => setState(() => _nextHearingDate = d)),
+                          _dateField(
+                            'Next hearing date',
+                            _nextHearingDate,
+                            (d) => setState(() => _nextHearingDate = d),
+                          ),
                           const SizedBox(height: 12),
-                          _dateField('Judgment date (optional)', _judgmentDate,
-                              (d) => setState(() => _judgmentDate = d)),
+                          _dateField(
+                            'Judgment date (optional)',
+                            _judgmentDate,
+                            (d) => setState(() => _judgmentDate = d),
+                          ),
                           const Divider(height: 28),
-                          _dateField('Reminder date', _reminderDate,
-                              (d) => setState(() => _reminderDate = d)),
+                          _dateField(
+                            'Reminder date',
+                            _reminderDate,
+                            (d) => setState(() => _reminderDate = d),
+                          ),
                           const SizedBox(height: 12),
                           _timeField(),
                           const SizedBox(height: 12),
@@ -511,18 +624,28 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                           const SizedBox(height: 4),
                           SwitchListTile(
                             contentPadding: EdgeInsets.zero,
-                            title: const Text('Repeat reminder', style: TextStyle(fontSize: 14)),
-                            subtitle: const Text('Remind on every occurrence', style: TextStyle(fontSize: 12)),
+                            title: const Text(
+                              'Repeat reminder',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                            subtitle: const Text(
+                              'Remind on every occurrence',
+                              style: TextStyle(fontSize: 12),
+                            ),
                             value: _repeatReminder,
                             activeTrackColor: AppColors.primary,
-                            onChanged: (v) => setState(() => _repeatReminder = v),
+                            onChanged: (v) =>
+                                setState(() => _repeatReminder = v),
                           ),
                           if (_reminderDate == null)
                             const Padding(
                               padding: EdgeInsets.only(top: 4),
                               child: Text(
                                 'No reminder will be scheduled without a reminder date.',
-                                style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                             ),
                         ],
@@ -533,12 +656,21 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       title: 'Opposing Party',
                       subtitle: 'Optional',
                       open: _opposingOpen,
-                      onToggle: () => setState(() => _opposingOpen = !_opposingOpen),
+                      onToggle: () =>
+                          setState(() => _opposingOpen = !_opposingOpen),
                       child: Column(
                         children: [
-                          _field(_opposingPartyController, 'Opposing party', 'e.g. Karim Mia'),
+                          _field(
+                            _opposingPartyController,
+                            'Opposing party',
+                            'e.g. Karim Mia',
+                          ),
                           const SizedBox(height: 14),
-                          _field(_opposingLawyerController, 'Opposing lawyer', 'e.g. Advocate Rahim Mia'),
+                          _field(
+                            _opposingLawyerController,
+                            'Opposing lawyer',
+                            'e.g. Advocate Rahim Mia',
+                          ),
                         ],
                       ),
                     ),
@@ -547,19 +679,33 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       title: 'Financial Information',
                       subtitle: 'Optional',
                       open: _financialOpen,
-                      onToggle: () => setState(() => _financialOpen = !_financialOpen),
+                      onToggle: () =>
+                          setState(() => _financialOpen = !_financialOpen),
                       child: Column(
                         children: [
-                          _field(_professionalFeeController, 'Professional fee', 'e.g. 25000',
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => _autoCalcDue()),
+                          _field(
+                            _professionalFeeController,
+                            'Professional fee',
+                            'e.g. 25000',
+                            keyboardType: TextInputType.number,
+                            onChanged: (_) => _autoCalcDue(),
+                          ),
                           const SizedBox(height: 14),
-                          _field(_paidAmountController, 'Paid amount', 'e.g. 10000',
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => _autoCalcDue()),
+                          _field(
+                            _paidAmountController,
+                            'Paid amount',
+                            'e.g. 10000',
+                            keyboardType: TextInputType.number,
+                            onChanged: (_) => _autoCalcDue(),
+                          ),
                           const SizedBox(height: 14),
-                          _field(_dueAmountController, 'Due amount (auto-calculated)', '0',
-                              keyboardType: TextInputType.number, readOnly: true),
+                          _field(
+                            _dueAmountController,
+                            'Due amount (auto-calculated)',
+                            '0',
+                            keyboardType: TextInputType.number,
+                            readOnly: true,
+                          ),
                           const SizedBox(height: 16),
                           _paymentStatusSelector(),
                         ],
@@ -570,7 +716,8 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       title: 'Documents',
                       subtitle: 'PDF · Images · Word',
                       open: _documentsOpen,
-                      onToggle: () => setState(() => _documentsOpen = !_documentsOpen),
+                      onToggle: () =>
+                          setState(() => _documentsOpen = !_documentsOpen),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -586,15 +733,20 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                               child: Text(
                                 'No documents attached.',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                             )
                           else
-                            ..._documents.map((d) => _DocumentTile(
-                                  doc: d,
-                                  onDownload: () => _downloadDocument(d),
-                                  onRemove: () => _removeDocument(d),
-                                )),
+                            ..._documents.map(
+                              (d) => _DocumentTile(
+                                doc: d,
+                                onDownload: () => _downloadDocument(d),
+                                onRemove: () => _removeDocument(d),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -603,7 +755,8 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       title: 'Case Progress',
                       subtitle: 'Timeline placeholder',
                       open: _progressOpen,
-                      onToggle: () => setState(() => _progressOpen = !_progressOpen),
+                      onToggle: () =>
+                          setState(() => _progressOpen = !_progressOpen),
                       child: const _ProgressPlaceholder(),
                     ),
                     _ExpandableSection(
@@ -615,7 +768,12 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       child: const _AiPlaceholder(),
                     ),
                     const SizedBox(height: 8),
-                    _field(_notesController, 'Notes', 'Anything relevant about this case…', maxLines: 4),
+                    _field(
+                      _notesController,
+                      'Notes',
+                      'Anything relevant about this case…',
+                      maxLines: 4,
+                    ),
                     const SizedBox(height: 24),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -657,12 +815,20 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
       maxLines: maxLines,
       readOnly: readOnly,
       onChanged: onChanged,
-      decoration: InputDecoration(labelText: label, hintText: hint, alignLabelWithHint: maxLines > 1),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        alignLabelWithHint: maxLines > 1,
+      ),
       validator: validator,
     );
   }
 
-  Widget _dateField(String label, DateTime? value, ValueChanged<DateTime?> onPicked) {
+  Widget _dateField(
+    String label,
+    DateTime? value,
+    ValueChanged<DateTime?> onPicked,
+  ) {
     return InkWell(
       onTap: () => _pickDate(onPicked),
       borderRadius: BorderRadius.circular(10),
@@ -672,10 +838,14 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
           suffixIcon: const Icon(Icons.calendar_today_outlined, size: 18),
         ),
         child: Text(
-          value == null ? 'Select date' : DateFormat('d MMM yyyy').format(value),
+          value == null
+              ? 'Select date'
+              : DateFormat('d MMM yyyy').format(value),
           style: TextStyle(
             fontSize: 14,
-            color: value == null ? AppColors.textSecondary : AppColors.textPrimary,
+            color: value == null
+                ? AppColors.textSecondary
+                : AppColors.textPrimary,
           ),
         ),
       ),
@@ -697,7 +867,9 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
               : _reminderTime!.format(context),
           style: TextStyle(
             fontSize: 14,
-            color: _reminderTime == null ? AppColors.textSecondary : AppColors.textPrimary,
+            color: _reminderTime == null
+                ? AppColors.textSecondary
+                : AppColors.textPrimary,
           ),
         ),
       ),
@@ -708,7 +880,14 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Status *', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textSecondary)),
+        const Text(
+          'Status *',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textSecondary,
+          ),
+        ),
         const SizedBox(height: 8),
         SegmentedButton<CaseStatus>(
           segments: const [
@@ -727,7 +906,14 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Reminder option', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textSecondary)),
+        const Text(
+          'Reminder option',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textSecondary,
+          ),
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -749,7 +935,14 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Payment status', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textSecondary)),
+        const Text(
+          'Payment status',
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textSecondary,
+          ),
+        ),
         const SizedBox(height: 8),
         SegmentedButton<PaymentStatus>(
           segments: const [
@@ -794,7 +987,11 @@ class _Section extends StatelessWidget {
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                 ),
                 _Badge(text: subtitle),
@@ -849,12 +1046,19 @@ class _ExpandableSection extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                            ),
                           ),
                           const SizedBox(height: 2),
                           Text(
                             subtitle,
-                            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ],
                       ),
@@ -919,10 +1123,20 @@ class _DocumentTile extends StatelessWidget {
                   doc.fileName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 if (doc.sizeLabel.isNotEmpty)
-                  Text(doc.sizeLabel, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                  Text(
+                    doc.sizeLabel,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -933,7 +1147,11 @@ class _DocumentTile extends StatelessWidget {
           ),
           IconButton(
             tooltip: 'Remove',
-            icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.danger),
+            icon: const Icon(
+              Icons.delete_outline,
+              size: 20,
+              color: AppColors.danger,
+            ),
             onPressed: onRemove,
           ),
         ],
@@ -947,7 +1165,13 @@ class _ProgressPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const stages = ['Case Created', 'Documents Uploaded', 'First Hearing', 'Next Hearing', 'Judgment'];
+    const stages = [
+      'Case Created',
+      'Documents Uploaded',
+      'First Hearing',
+      'Next Hearing',
+      'Judgment',
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -956,16 +1180,28 @@ class _ProgressPlaceholder extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
         const SizedBox(height: 12),
-        ...stages.map((s) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                children: [
-                  const Icon(Icons.circle_outlined, size: 14, color: AppColors.textSecondary),
-                  const SizedBox(width: 10),
-                  Text(s, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
-                ],
-              ),
-            )),
+        ...stages.map(
+          (s) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.circle_outlined,
+                  size: 14,
+                  color: AppColors.textSecondary,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  s,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -976,7 +1212,11 @@ class _AiPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const features = ['AI Case Summary', 'AI Legal Suggestions', 'AI Document Analysis'];
+    const features = [
+      'AI Case Summary',
+      'AI Legal Suggestions',
+      'AI Document Analysis',
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -985,16 +1225,28 @@ class _AiPlaceholder extends StatelessWidget {
           style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
         ),
         const SizedBox(height: 12),
-        ...features.map((f) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                children: [
-                  const Icon(Icons.auto_awesome_outlined, size: 14, color: AppColors.accent),
-                  const SizedBox(width: 10),
-                  Text(f, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
-                ],
-              ),
-            )),
+        ...features.map(
+          (f) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.auto_awesome_outlined,
+                  size: 14,
+                  color: AppColors.accent,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  f,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -1014,7 +1266,11 @@ class _Badge extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.accent),
+        style: const TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+          color: AppColors.accent,
+        ),
       ),
     );
   }
