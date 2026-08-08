@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\UserAdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CaseController;
 use App\Http\Controllers\CaseDocumentController;
 use App\Http\Controllers\DeadlineController;
 use App\Http\Controllers\DeviceTokenController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,10 +28,16 @@ Route::prefix('v1')->group(function () {
 
     // Authenticated user routes.
     Route::middleware('auth:sanctum')->group(function () {
-        // Profile.
+// Profile.
         Route::get('/me', [AuthController::class, 'me']);
         Route::put('/me', [AuthController::class, 'updateProfile']);
         Route::post('/logout', [AuthController::class, 'logout']);
+        Route::delete('/me', [AuthController::class, 'destroy']);
+
+        // Subscriptions.
+        Route::post('/subscriptions/upgrade', [SubscriptionController::class, 'upgrade']);
+        Route::post('/subscriptions/cancel', [SubscriptionController::class, 'cancel']);
+        Route::get('/subscriptions/payments', [SubscriptionController::class, 'payments']);
 
         // Device tokens (push notifications).
         Route::post('/device-tokens', [DeviceTokenController::class, 'register']);
@@ -57,12 +65,19 @@ Route::prefix('v1')->group(function () {
         Route::get('/cases/{case}/documents/{document}/download', [CaseDocumentController::class, 'download']);
         Route::delete('/cases/{case}/documents/{document}', [CaseDocumentController::class, 'destroy']);
 
-        // Super admin routes.
+// Super admin routes.
         Route::middleware('admin')->prefix('admin')->group(function () {
+            Route::get('/dashboard', [AdminDashboardController::class, 'stats']);
+            Route::get('/cases', [AdminDashboardController::class, 'cases']);
+            Route::get('/subscriptions', [AdminDashboardController::class, 'subscriptions']);
+
             Route::get('/users', [UserAdminController::class, 'index']);
             Route::get('/users/{user}', [UserAdminController::class, 'show']);
             Route::put('/users/{user}', [UserAdminController::class, 'update']);
             Route::delete('/users/{user}', [UserAdminController::class, 'destroy']);
+            Route::post('/users/{user}/verify', [UserAdminController::class, 'verify']);
+            Route::post('/users/{user}/reject', [UserAdminController::class, 'reject']);
+            Route::post('/users/{user}/suspend', [UserAdminController::class, 'suspend']);
         });
     });
 });

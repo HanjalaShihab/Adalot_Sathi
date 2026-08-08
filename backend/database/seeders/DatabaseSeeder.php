@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Deadline;
 use App\Models\LegalCase;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -109,7 +110,7 @@ $paidUser = User::factory()->paid()->create([
             $this->createDeadlines($legalCase);
         }
 
-        // ─── Extra random lawyers (mix of free/paid) for realism ──────
+// ─── Extra random lawyers (mix of free/paid) for realism ──────
         User::factory()->count(5)->create()->each(function ($user) {
             $statusPool = ['active', 'active', 'active', 'on_hold', 'closed'];
             $caseCount = $user->subscription_tier === 'paid' ? rand(6, 10) : rand(1, 5);
@@ -124,6 +125,38 @@ $paidUser = User::factory()->paid()->create([
                     $this->createDeadlines($legalCase);
                 });
         });
+
+        // Mark some lawyers as pending/rejected verification for admin demo.
+        $pendingPool = User::where('role', 'lawyer')
+            ->whereNotIn('email', ['tanvir@example.com', 'sadia@example.com'])
+            ->limit(2)
+            ->get();
+        $pendingPool->each(function ($user, $i) {
+            $user->update([
+                'verification_status' => $i === 0 ? 'pending' : 'rejected',
+                'rejection_reason' => $i === 0 ? null : 'Bar council number could not be verified.',
+            ]);
+        });
+
+        // Seed a few payments for the paid demo user (payment history).
+        $sadia = User::where('email', 'sadia@example.com')->first();
+        if ($sadia) {
+            foreach ([
+                ['amount' => 999, 'ref' => 'PAY-ADALOT-SADIA-001'],
+                ['amount' => 999, 'ref' => 'PAY-ADALOT-SADIA-002'],
+            ] as $pay) {
+                Payment::create([
+                    'user_id' => $sadia->id,
+                    'reference' => $pay['ref'],
+                    'method' => 'card',
+                    'status' => 'succeeded',
+                    'amount' => $pay['amount'],
+                    'currency' => 'BDT',
+                    'description' => 'Adalot Sathi Plus — annual subscription',
+                    'paid_at' => now()->subMonths($pay['ref'] === 'PAY-ADALOT-SADIA-001' ? 12 : 1),
+                ]);
+            }
+        }
     }
 
     /**

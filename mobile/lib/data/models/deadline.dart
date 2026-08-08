@@ -91,8 +91,8 @@ class Deadline {
       dueTime: json['due_time'] as String?,
       description: json['description'] as String?,
       status: DeadlineStatusX.fromWire(json['status'] as String?),
-      reminderDaysBefore: (json['reminder_days_before'] as List<dynamic>? ?? const [])
-          .map((e) => e as int)
+reminderDaysBefore: (json['reminder_days_before'] as List<dynamic>? ?? const [])
+          .whereType<int>()
           .toList(),
       createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] as String? ?? ''),

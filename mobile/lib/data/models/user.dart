@@ -65,6 +65,10 @@ class User {
   final SubscriptionTier subscriptionTier;
   final String? subscriptionExpiresAt;
   final SubscriptionSummary subscription;
+  final String? verificationStatus;
+  final String? rejectionReason;
+  final bool isSuspended;
+  final String? suspendedUntil;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -95,6 +99,10 @@ class User {
     this.subscriptionTier = SubscriptionTier.free,
     this.subscriptionExpiresAt,
     required this.subscription,
+    this.verificationStatus,
+    this.rejectionReason,
+    this.isSuspended = false,
+    this.suspendedUntil,
     this.createdAt,
     this.updatedAt,
     this.barCouncilNumber,
@@ -113,6 +121,8 @@ class User {
 
   bool get isPaid => subscriptionTier == SubscriptionTier.paid;
 
+  bool get isAdmin => role == UserRole.admin;
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] as int,
@@ -126,6 +136,10 @@ class User {
       subscription: SubscriptionSummary.fromJson(
         (json['subscription'] as Map<String, dynamic>?) ?? const {},
       ),
+      verificationStatus: json['verification_status'] as String?,
+      rejectionReason: json['rejection_reason'] as String?,
+      isSuspended: json['is_suspended'] as bool? ?? false,
+      suspendedUntil: json['suspended_until'] as String?,
       createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
       updatedAt: DateTime.tryParse(json['updated_at'] as String? ?? ''),
       barCouncilNumber: json['bar_council_number'] as String?,
@@ -147,4 +161,3 @@ class User {
     );
   }
 }
-

@@ -21,9 +21,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'phone',
+'phone',
         'password',
         'role',
+        'verification_status',
+        'rejection_reason',
+        'is_suspended',
+        'suspended_until',
         'subscription_tier',
         'subscription_expires_at',
         'bar_council_number',
@@ -59,9 +63,13 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+'password' => 'hashed',
             'subscription_expires_at' => 'date',
             'role' => 'string',
+            'verification_status' => 'string',
+            'rejection_reason' => 'string',
+            'is_suspended' => 'boolean',
+            'suspended_until' => 'date',
             'subscription_tier' => 'string',
             'years_of_experience' => 'integer',
             'practice_areas' => 'array',
@@ -111,12 +119,20 @@ class User extends Authenticatable
         return $this->hasMany(DeviceToken::class);
     }
 
-    /**
+/**
      * The notification logs for this user.
      */
     public function notificationLogs(): HasMany
     {
         return $this->hasMany(NotificationLog::class);
+    }
+
+    /**
+     * The payments made by this user.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }
 

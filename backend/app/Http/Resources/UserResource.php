@@ -34,7 +34,11 @@ return [
             'notification_settings' => $this->notification_settings,
             'reminder_settings' => $this->reminder_settings,
             'dark_mode' => $this->dark_mode,
-            'role' => $this->role,
+'role' => $this->role,
+            'verification_status' => $this->verification_status,
+            'rejection_reason' => $this->rejection_reason,
+            'is_suspended' => $this->is_suspended,
+            'suspended_until' => $this->suspended_until?->format('Y-m-d'),
             'subscription_tier' => $this->subscription_tier,
             'subscription_expires_at' => $this->subscription_expires_at?->format('Y-m-d'),
             'subscription' => [

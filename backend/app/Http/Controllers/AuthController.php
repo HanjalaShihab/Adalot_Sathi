@@ -104,7 +104,7 @@ public function updateProfile(UpdateProfileRequest $request): UserResource
         return new UserResource($user->fresh());
     }
 
-    /**
+/**
      * Log the user out (revoke the current token).
      */
     public function logout(Request $request): JsonResponse
@@ -114,6 +114,29 @@ public function updateProfile(UpdateProfileRequest $request): UserResource
         return response()->json([
             'message' => 'Logged out successfully.',
         ]);
+    }
+
+    /**
+     * Permanently delete the authenticated user's account and data.
+     */
+    public function destroy(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            return response()->json([
+                'message' => 'Admin accounts cannot be deleted.',
+            ], 403);
+        }
+
+        // Revoke all tokens before deleting the account.
+        $user->tokens()->delete();
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Your account has been permanently deleted.',
+        ], 200);
     }
 }
 

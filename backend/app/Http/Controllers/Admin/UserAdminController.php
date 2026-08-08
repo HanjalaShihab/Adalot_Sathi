@@ -78,6 +78,66 @@ class UserAdminController extends Controller
         return new UserResource($user->fresh()->loadCount('legalCases'));
     }
 
+/**
+     * Verify a lawyer's account (approve pending verification).
+     */
+    public function verify(int $id): UserResource
+    {
+        $user = User::findOrFail($id);
+
+        $user->update([
+            'verification_status' => 'verified',
+            'rejection_reason' => null,
+        ]);
+
+        return new UserResource($user->fresh()->loadCount('legalCases'));
+    }
+
+    /**
+     * Reject a lawyer's verification request with a reason.
+     */
+    public function reject(Request $request, int $id): UserResource
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $user->update([
+            'verification_status' => 'rejected',
+            'rejection_reason' => $validated['reason'],
+        ]);
+
+        return new UserResource($user->fresh()->loadCount('legalCases'));
+    }
+
+    /**
+     * Suspend or unsuspend a lawyer's account.
+     */
+    public function suspend(Request $request, int $id): UserResource
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->role === 'admin' && $user->id === $request->user()->id) {
+            throw ValidationException::withMessages([
+                'user' => 'You cannot suspend your own account.',
+            ]);
+        }
+
+        $validated = $request->validate([
+            'is_suspended' => ['required', 'boolean'],
+            'suspended_until' => ['nullable', 'date', 'date_format:Y-m-d'],
+        ]);
+
+        $user->update([
+            'is_suspended' => (bool) $validated['is_suspended'],
+            'suspended_until' => $validated['suspended_until'] ?? null,
+        ]);
+
+        return new UserResource($user->fresh()->loadCount('legalCases'));
+    }
+
     /**
      * Deactivate a user account (super admin).
      */
