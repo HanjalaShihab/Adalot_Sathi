@@ -18,10 +18,9 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(":app")
 }
-// Flutter 3.44.8 / AGP 9.0.1 default to NDK 28.2.13676358, but the local SDK
-// only has a broken/empty install of that version. Pin every Android
-// subproject (including native plugins like :jni) to the fully-installed
-// NDK 27 so configuration does not fail with CXX1101.
+// Native plugins (file_picker, flutter_secure_storage, jni, etc.) require
+// NDK 28.2.13676358. Pin every Android library subproject to that version so
+// native builds (CXX tasks) resolve the correct NDK.
 //
 // NOTE: Native plugins (e.g. package:jni) set `ndkVersion flutter.ndkVersion`
 // in their own android { } block, which overwrites any value set during plugin
@@ -31,11 +30,7 @@ subprojects {
     plugins.withId("com.android.library") {
         afterEvaluate {
             extensions.configure<com.android.build.api.dsl.LibraryExtension>("android") {
-                ndkVersion = "27.1.12297006"
-                // Native plugins (e.g. file_picker -> flutter_plugin_android_lifecycle)
-                // now require compileSdk 36+. Pin plugin library modules to 36 so
-                // AAR metadata checks pass.
-                compileSdk = 36
+                ndkVersion = "28.2.13676358"
             }
         }
     }
