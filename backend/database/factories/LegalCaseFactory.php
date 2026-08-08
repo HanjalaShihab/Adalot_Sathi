@@ -74,7 +74,7 @@ class LegalCaseFactory extends Factory
                 'Md. Selim Chowdhury',
                 'National Housing Authority',
             ]),
-            'case_type' => fake()->randomElement([
+'case_type' => fake()->randomElement([
                 'Civil',
                 'Criminal',
                 'Family',
@@ -84,7 +84,7 @@ class LegalCaseFactory extends Factory
                 'Arbitration',
                 'Banking',
             ]),
-'status' => fake()->randomElement(['active', 'active', 'active', 'on_hold', 'closed']),
+            'status' => fake()->randomElement(['active', 'active', 'active', 'on_hold', 'closed']),
             'notes' => fake()->optional()->sentence(10),
             'client_email' => fake()->optional()->safeEmail(),
             'client_address' => fake()->optional()->address(),
@@ -94,10 +94,10 @@ class LegalCaseFactory extends Factory
             'bench' => fake()->optional()->randomElement([
                 'Civil Bench 1', 'Criminal Bench 2', 'Family Bench 3', 'Special Bench',
             ]),
-            'filing_date' => fake()->optional()->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
-            'next_hearing_date' => fake()->optional(0.6)->dateTimeBetween('now', '+1 month')->format('Y-m-d'),
+'filing_date' => fake()->optional()->dateTimeBetween('-2 years', 'now')?->format('Y-m-d'),
+            'next_hearing_date' => fake()->optional(0.6)->dateTimeBetween('now', '+1 month')?->format('Y-m-d'),
             'judgment_date' => null,
-            'reminder_date' => fake()->optional(0.4)->dateTimeBetween('now', '+3 weeks')->format('Y-m-d'),
+            'reminder_date' => fake()->optional(0.4)->dateTimeBetween('now', '+3 weeks')?->format('Y-m-d'),
             'reminder_time' => fake()->optional(0.4)->time('H:i'),
             'reminder_option' => fake()->optional()->randomElement(['1', '2', '3', '7', 'custom']),
             'repeat_reminder' => fake()->boolean(30),
