@@ -16,9 +16,11 @@ import '../../widgets/state_widgets.dart';
 
 /// Add/Edit case form.
 ///
-/// Organized into clearly labeled, collapsible sections (A–I). Only the
-/// required fields are shown fully expanded; optional sections are collapsed
-/// by default so a lawyer can create a case quickly and enrich it later.
+/// Organized into clearly labeled sections. Basic Information, Client
+/// Information and Important Dates are required and shown fully expanded;
+/// optional sections (Court, Opposing Party, Financial, Documents, Case
+/// Progress) are collapsible dropdowns so a lawyer can create a case quickly
+/// and enrich it later.
 ///
 /// When the repository returns [CaseLimitReachedException] (free tier, 5-case
 /// limit), a dedicated, non-punishing upgrade prompt is shown instead of a
@@ -77,14 +79,11 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
   final List<CaseDocument> _documents = [];
 
   // Section collapse state (optional sections expandable).
-  bool _clientOpen = false;
   bool _courtOpen = false;
-  bool _datesOpen = false;
   bool _opposingOpen = false;
   bool _financialOpen = false;
   bool _documentsOpen = false;
   bool _progressOpen = false;
-  bool _aiOpen = false;
 
   bool _isSubmitting = false;
   bool _isLoading = false;
@@ -495,13 +494,10 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                         ],
                       ),
                     ),
-                    _ExpandableSection(
+                    _Section(
                       icon: Icons.person_outline,
                       title: 'Client Information',
-                      subtitle: 'Optional',
-                      open: _clientOpen,
-                      onToggle: () =>
-                          setState(() => _clientOpen = !_clientOpen),
+                      subtitle: 'Required',
                       child: Column(
                         children: [
                           _field(
@@ -565,11 +561,8 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                         children: [
                           _field(
                             _courtNameController,
-                            'Court *',
+                            'Court (optional)',
                             'e.g. Dhaka District Court',
-                            validator: (v) => (v == null || v.trim().isEmpty)
-                                ? 'Court is required'
-                                : null,
                           ),
                           const SizedBox(height: 14),
                           _field(
@@ -586,12 +579,10 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                         ],
                       ),
                     ),
-                    _ExpandableSection(
+                    _Section(
                       icon: Icons.event_outlined,
                       title: 'Important Dates',
-                      subtitle: 'Reminders & hearings',
-                      open: _datesOpen,
-                      onToggle: () => setState(() => _datesOpen = !_datesOpen),
+                      subtitle: 'Required',
                       child: Column(
                         children: [
                           _dateField(
@@ -758,14 +749,6 @@ class _CaseFormScreenState extends ConsumerState<CaseFormScreen> {
                       onToggle: () =>
                           setState(() => _progressOpen = !_progressOpen),
                       child: const _ProgressPlaceholder(),
-                    ),
-                    _ExpandableSection(
-                      icon: Icons.auto_awesome_outlined,
-                      title: 'Future AI Features',
-                      subtitle: 'Coming soon',
-                      open: _aiOpen,
-                      onToggle: () => setState(() => _aiOpen = !_aiOpen),
-                      child: const _AiPlaceholder(),
                     ),
                     const SizedBox(height: 8),
                     _field(
@@ -1193,51 +1176,6 @@ class _ProgressPlaceholder extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   s,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _AiPlaceholder extends StatelessWidget {
-  const _AiPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    const features = [
-      'AI Case Summary',
-      'AI Legal Suggestions',
-      'AI Document Analysis',
-    ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Reserved for future AI features.',
-          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 12),
-        ...features.map(
-          (f) => Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.auto_awesome_outlined,
-                  size: 14,
-                  color: AppColors.accent,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  f,
                   style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.textPrimary,

@@ -1,13 +1,18 @@
-# TODO — Fix "Could not reach the server" on login/register
+# TODO
 
-## Steps
-- [x] Investigate root cause of connection error
-- [x] Update mobile app base URL to the machine's real LAN IP (`192.168.0.104`)
-- [x] Restart backend bound to `0.0.0.0:8000` (reachable over LAN)
-- [x] Update README to document `--host=0.0.0.0` for physical-device testing
-- [x] Verify backend reachable via `http://192.168.0.104:8000`
-- [x] Open port 8000 in firewalld (was blocking inbound LAN connections)
+## Case Adding Fix & Form Restructure
 
-## Remaining (phone side, user action)
-- [ ] Rebuild & reinstall the Flutter app so it uses the new `192.168.0.104` URL
-- [ ] Ensure the phone is on the same Wi-Fi network as the backend machine
+### Backend
+- [x] StoreCaseRequest: make `court_name` optional (nullable)
+- [x] UpdateCaseRequest: make `court_name` optional (nullable)
+- [x] DatabaseSeeder: reduce free-tier demo user to 1 demo case
+
+### Mobile
+- [x] case_form_screen.dart: make Basic Info, Client Info, Important Dates required/expanded
+- [x] case_form_screen.dart: make Court, Opposing Party, Financial, Documents, Case Progress optional dropdowns
+- [x] case_form_screen.dart: remove Future AI Features section
+
+### Verification
+- [x] Run `php artisan migrate:fresh --seed`
+- [x] Confirm case creation works
+- [x] Run `flutter analyze` to confirm no compile errors

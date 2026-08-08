@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => 'Admin@1234',
         ]);
 
-        // ─── Demo Free-Tier Lawyer (5 active cases → limit reached) ───
+// ─── Demo Free-Tier Lawyer (room to add new cases) ───────────
 $freeUser = User::factory()->create([
             'name' => 'Barrister Tanvir Ahmed',
             'email' => 'tanvir@example.com',
@@ -47,38 +47,6 @@ $freeUser = User::factory()->create([
                 'court_name' => 'Dhaka District Judge Court',
                 'opposing_party' => 'Rupali Bank Limited',
                 'case_type' => 'Banking',
-            ],
-            [
-                'title' => 'Title Suit for Partition of Ancestral Land',
-                'case_number' => 'Title Suit No. 145 of 2024',
-                'client_name' => 'Fatema Begum',
-                'court_name' => 'Civil Judge Court, Chattogram',
-                'opposing_party' => 'Md. Golam Mostofa',
-                'case_type' => 'Civil',
-            ],
-            [
-                'title' => 'Cheque Dishonour Case under N.I. Act',
-                'case_number' => 'C.R. Case No. 823 of 2024',
-                'client_name' => 'Shahidul Alam',
-                'court_name' => 'Chief Metropolitan Magistrate Court, Dhaka',
-                'opposing_party' => 'Md. Jahangir Alam',
-                'case_type' => 'Criminal',
-            ],
-            [
-                'title' => 'Specific Performance of Sale Agreement',
-                'case_number' => 'Title Suit No. 289 of 2024',
-                'client_name' => 'Nusrat Jahan',
-                'court_name' => 'District Court, Rajshahi',
-                'opposing_party' => 'Mrs. Roksana Parvin',
-                'case_type' => 'Civil',
-            ],
-            [
-                'title' => 'Custody Petition under Family Law',
-                'case_number' => 'Family Suit No. 77 of 2024',
-                'client_name' => 'Tahmina Akter',
-                'court_name' => 'Family Court, Dhaka',
-                'opposing_party' => 'Md. Selim Chowdhury',
-                'case_type' => 'Family',
             ],
         ] as $caseData) {
             $legalCase = $freeUser->legalCases()->create($caseData);
