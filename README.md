@@ -65,10 +65,21 @@ composer install
 cp .env.example .env          # set DB_* / app name
 php artisan key:generate
 php artisan migrate --seed
+# For a physical Android device on the same Wi-Fi, bind to all interfaces:
+php artisan serve --host=0.0.0.0 --port=8000
+# Otherwise (desktop/web only):
 php artisan serve
 ```
 
 API base: `http://127.0.0.1:8000/api/v1`
+
+> **Physical device note:** the mobile app (see `mobile/lib/core/config/app_config.dart`)
+> defaults to <http://192.168.0.104:8000/api/v1> for Android devices. That is the
+> backend machine's LAN IP — update it if your machine's IP changes, bind `artisan
+> serve` to `0.0.0.0`, and keep the phone on the same Wi-Fi network. You can also
+> override at build time:
+>
+> `flutter run --dart-define=API_BASE_URL=http://<YOUR_LAN_IP>:8000/api/v1`
 
 ### Seed Credentials
 
